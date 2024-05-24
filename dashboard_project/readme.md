@@ -72,5 +72,5 @@ Contains styles for various elements including body, headers, containers, charts
 Ensures a clean and responsive design for the application.
 API Integration
 The project uses the requests library to fetch data from an external API based on the selected country.
-Example API Endpoint: https://us-central1-projectexperiment-420611.cloudfunctions.net/assignApi?countryName=USA
+Example API Endpoint: https://us-central1-projectexperiment-420611.cloudfunctions.net/assignApi?countryName={countryname}
 The data fetched is used to populate charts and driver details on the dashboard page.
