@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Dashboard for {{ country }}</h1>
+    </header>
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="lineChart"></canvas>
+        </div>
+        <h2>Driver Details</h2>
+        <div id="driver-details">
+            <!-- Driver details will be inserted here by JavaScript -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const data = JSON.parse(document.getElementById('data-json').textContent);
+
+            var pieCtx = document.getElementById('pieChart').getContext('2d');
+            var pieChart = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: data.pie_labels,
+                    datasets: [{
+                        data: data.pie_values,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+
+            var lineCtx = document.getElementById('lineChart').getContext('2d');
+            var lineChart = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: data.line_labels,
+                    datasets: [{
+                        label: 'Age',
+                        data: data.line_values,
+                        borderColor: '#36A2EB',
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+
+            // Insert driver details into the page
+            const driverDetailsDiv = document.getElementById('driver-details');
+            data.drivers.forEach(driver => {
+                const driverDiv = document.createElement('div');
+                driverDiv.classList.add('driver');
+
+                driverDiv.innerHTML = `
+                    <h3>${driver.name}</h3>
+                    <p>Driver ID: ${driver.driver_id}</p>
+                    <p>Age: ${driver.age}</p>
+                    <p>Address: ${driver.address}</p>
+                    <p>Car Type: ${driver.car_type}</p>
+                    <p>Cab Details: ${driver.cab_details.make} ${driver.cab_details.model} (${driver.cab_details.year}) - ${driver.cab_details.color}</p>
+                    <p>Location: (${driver.location.latitude}, ${driver.location.longitude})</p>
+                    <p>Average Earnings per Month: $${driver.average_earnings_per_month}</p>
+                `;
+
+                driverDetailsDiv.appendChild(driverDiv);
+            });
+        });
+    </script>
+    <script id="data-json" type="application/json">{{ data|safe }}</script>
+</body>
+</html>
